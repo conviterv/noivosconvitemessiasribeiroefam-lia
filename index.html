@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Casamento Ronaldo e Vitória</title>
+    
+    <!-- Tailwind CSS (Via CDN para performance e leveza) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Configurações Globais */
+        :root {
+            --gold: #D4AF37;
+            --overlay-color: rgba(0, 0, 0, 0.25); /* Limite estrito de 25% conforme solicitado */
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden; /* Controlado pelo JS/CSS */
+            background-color: #000;
+        }
+
+        /* Tipografia de Luxo */
+        .font-script {
+            font-family: 'Great Vibes', cursive;
+        }
+        .font-serif {
+            font-family: 'Cinzel', serif;
+        }
+
+        /* Scroll Snap para efeito de "Páginas" no Mobile */
+        .scroll-container {
+            height: 100vh;
+            width: 100vw;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .page-section {
+            height: 100vh;
+            width: 100vw;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Overlay Fixo e Leitura */
+        .page-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--overlay-color);
+            z-index: 1;
+        }
+
+        .content-box {
+            position: relative;
+            z-index: 10;
+            color: white;
+            /* Sombra pesada no texto para garantir leitura sobre o fundo claro/escuro com apenas 25% de overlay */
+            text-shadow: 0 2px 4px rgba(0,0,0,0.95); 
+            width: 100%;
+            max-width: 600px;
+            animation: fadeInUp 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* Animação do Envelope Inicial */
+        #envelope-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #1a1a1a;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .envelope {
+            width: 300px;
+            height: 200px;
+            background: #fdfbf7;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .seal {
+            width: 60px;
+            height: 60px;
+            background: #b91c1c; /* Vermelho Cera */
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #d4af37;
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: 2px solid #a11515;
+        }
+
+        .click-hint {
+            position: absolute;
+            bottom: -50px;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            animation: pulse 2s infinite;
+        }
+
+        /* Estados de Animação */
+        .envelope-open {
+            transform: scale(1.5);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Elementos Decorativos */
+        .divider {
+            height: 2px;
+            width: 100px;
+            background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+            margin: 1.5rem auto;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-shadow: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn-whatsapp:active {
+            transform: scale(0.95);
+        }
+
+        /* Ajuste de opacidade para a imagem de fundo via CSS inline no HTML para garantir funcionalidade */
+    </style>
+</head>
+<body>
+
+    <!-- 1. Tela de Abertura (Envelope) -->
+    <div id="envelope-overlay" onclick="openInvitation()">
+        <div class="envelope">
+            <div class="seal">R&V</div>
+            <!-- Linhas decorativas do envelope -->
+            <div style="position: absolute; width: 0; height: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-top: 100px solid #e6e2d8; top: 0;"></div>
+            <div style="position: absolute; width: 0; height: 0; border-left: 150px solid transparent; border-right: 150px solid transparent; border-bottom: 100px solid #ece8de; bottom: 0;"></div>
+        </div>
+        <div class="click-hint">TOQUE PARA ABRIR</div>
+    </div>
+
+    <!-- 2. Conteúdo Principal (Scroll Snap) -->
+    <main class="scroll-container" id="main-content">
+        
+        <!-- PÁGINA 1: Anúncio e Versículo -->
+        <section class="page-section" style="background-image: url('https://lh3.googleusercontent.com/pw/AP1GczN-jT6RPak6-o9gwoFgg158HE_mf_VOP80INWvdu_Hq4Ywa9RNLmpVJbHu5aaXZbJ4pJhaJ5ocVhXnHT2H_83X7kKFNIfatRVgarvnX7053kg_ISFp9PIcwKRZX_5f5kDjUWpyy00ru0eQg2WRju-ltiA=w576-h324-s-no-gm?authuser=0');">
+            <div class="page-overlay"></div>
+            <div class="content-box">
+                <p class="uppercase tracking-[0.3em] text-sm mb-4">Vamos nos Casar</p>
+                
+                <h1 class="font-script text-6xl md:text-8xl text-[#D4AF37] mb-6">Ronaldo <br>&<br> Vitória</h1>
+                
+                <div class="divider"></div>
+
+                <div class="px-6 relative">
+                    <i class="fas fa-quote-left text-white/50 absolute -top-4 left-0 text-xl"></i>
+                    <p class="font-serif italic text-lg leading-relaxed md:text-xl px-4">
+                        "Assim não são mais dois, mas uma só carne. Portanto, o que Deus ajuntou não o separe o homem."
+                    </p>
+                    <p class="text-sm mt-3 font-semibold text-[#D4AF37]">Marcos 10:9</p>
+                    <i class="fas fa-quote-right text-white/50 absolute -bottom-4 right-0 text-xl"></i>
+                </div>
+                
+                <div class="mt-12 animate-bounce opacity-75">
+                    <p class="text-[10px] uppercase tracking-widest mb-1">Deslize para ler</p>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 2: Pais e Apresentação -->
+        <section class="page-section" style="background-image: url('https://lh3.googleusercontent.com/pw/AP1GczOC_Z2FoaYWWT65AmAcCUnHXEbqJ1um-7RrnjBagS0fsBndz-8pwYCMrFSZDsNiIvlzwSX-6FCQf6Np_Gwd_oYQoZSZDnmgVHO57X6mhw7tM0tUgGDOJE10eQYyyQd6NiyysKBzLd3ciGzGyUo8P9Z4iA=w272-h180-s-no-gm?authuser=0');">
+            <div class="page-overlay"></div>
+            <div class="content-box">
+                <div class="space-y-6">
+                    <div>
+                        <p class="uppercase text-xs tracking-widest mb-2 opacity-90">Com a bênção Deus e de seus pais</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6">
+                        <!-- Pais do Noivo -->
+                        <div>
+                            <h3 class="font-serif text-[#D4AF37] text-lg font-bold">Natividade Pereira de Araújo</h3>
+                            <span class="text-sm">&</span>
+                            <h3 class="font-serif text-[#D4AF37] text-lg font-bold">Maria Barros de Araújo</h3>
+                        </div>
+
+                        <!-- Pais da Noiva -->
+                        <div>
+                            <h3 class="font-serif text-[#D4AF37] text-lg font-bold">Reilson Barbosa Santos</h3>
+                            <span class="text-sm">&</span>
+                            <h3 class="font-serif text-[#D4AF37] text-lg font-bold">Vânia Nunes de Araújo Pereira</h3>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <p class="font-serif text-base leading-relaxed px-4">
+                        Temos a honra e alegria de anunciar que nossos filhos,
+                    </p>
+                    
+                    <h2 class="font-script text-4xl my-2 text-[#D4AF37]">Ronaldo & Vitória</h2>
+                    
+                    <p class="font-serif text-base leading-relaxed px-4">
+                        se unirão em sagrado matrimônio diante de Deus e dos homens.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 3: Convite Oficial -->
+        <section class="page-section" style="background-image: url('https://lh3.googleusercontent.com/pw/AP1GczMD5lCjq2XO-mSX15c9yrUggf4ZIsZHpp9KSnpBlZMBUJc9WpMML6l9vRtBFDxVZTEwpPZ0NnPs15Qkz_5aane3FuBOgs9Oo5nJN-wganu85n1OEy3IQzyXhG6QaDZ3Vx1Zsho1kmhd8Khwfd1OF3Yywg=w554-h554-s-no-gm?authuser=0');">
+            <div class="page-overlay"></div>
+            <div class="content-box">
+                <div class="border border-[#D4AF37]/50 p-6 md:p-10 relative bg-black/30 backdrop-blur-sm rounded-lg mx-4">
+                    <!-- Cantos ornamentais CSS -->
+                    <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#D4AF37]"></div>
+                    <div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-[#D4AF37]"></div>
+                    <div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-[#D4AF37]"></div>
+                    <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#D4AF37]"></div>
+
+                    <p class="font-serif mb-4 text-sm md:text-base">Solicitam a honra da presença de</p>
+                    
+                    <div class="my-6">
+                        <span class="block font-script text-3xl md:text-4xl text-[#D4AF37] mb-1">Família</span>
+                        <span class="block font-serif text-xl md:text-2xl font-bold uppercase tracking-wide border-b border-white/30 pb-2 mx-auto w-3/4">Messias Ribeiro e Família</span>
+                    </div>
+
+                    <p class="font-serif text-sm leading-relaxed mb-4">
+                        Para celebrar conosco o início desta nova jornada de amor, fé e companheirismo.
+                    </p>
+                    
+                    <p class="text-xs uppercase tracking-widest mt-6 opacity-80">
+                        Sua presença tornará nosso dia ainda mais especial.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA 4: Aceite e Link -->
+        <section class="page-section" style="background-image: url('https://lh3.googleusercontent.com/pw/AP1GczN5TfIUzG-41jtSgesfHN-uffA_lqbQravfPPXxOicLbHcGlHBrRFTdbSboJVBHbWHzTS7dAFhMB-Bplkqu6wnxq2XYz26bGegZOMc8OLQQ37mpYSzMIT71i0VfbmZVlbsax_rFBhRvYzPYWWTVZl-3jw=w399-h599-s-no-gm?authuser=0');">
+            <div class="page-overlay"></div>
+            <div class="content-box">
+                <h2 class="font-script text-5xl text-[#D4AF37] mb-4">Agradecemos</h2>
+                <p class="font-serif text-lg mb-8">Por fazer parte da nossa história.</p>
+
+                <div class="bg-black/40 backdrop-blur-md p-6 rounded-xl mx-4 shadow-2xl border border-white/10">
+                    <p class="text-sm mb-6 leading-relaxed">
+                        Para nos ajudar na organização deste grande dia, por favor, clique abaixo para enviar uma mensagem de aceitação do convite.
+                    </p>
+
+                    <!-- Botão WhatsApp sem número (abre seletor de contato) -->
+                    <a href="#" onclick="openWhatsApp()" class="btn-whatsapp no-underline">
+                        <i class="fab fa-whatsapp text-xl"></i>
+                        Aceitar Convite
+                    </a>
+
+                    <div class="mt-8 pt-6 border-t border-white/20">
+                        <p class="font-serif text-[#D4AF37] text-xs font-bold uppercase tracking-wider mb-2">
+                            <i class="fas fa-info-circle mr-1"></i> Informação Importante
+                        </p>
+                        <p class="text-xs text-gray-200 leading-relaxed">
+                            Após o aceite do convite, enviaremos em breve o <strong>Manual dos Convidados</strong> contendo a lista de presentes, horário, local da cerimônia e igreja. A confirmação oficial de presença será realizada nesta etapa futura.
+                        </p>
+                    </div>
+                </div>
+
+                <footer class="absolute bottom-4 w-full text-center opacity-50 text-[10px]">
+                    <p>&copy; 2025 Ronaldo & Vitória</p>
+                </footer>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Função para abrir o envelope
+        function openInvitation() {
+            const overlay = document.getElementById('envelope-overlay');
+            const mainContent = document.getElementById('main-content');
+            
+            // Adiciona classe para animar saída
+            overlay.classList.add('envelope-open');
+            
+            // Remove do DOM após a animação para liberar interação
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                // Trigger animação de entrada do conteúdo da primeira página
+                const firstContent = document.querySelector('.page-section:first-child .content-box');
+                firstContent.style.animation = 'none';
+                firstContent.offsetHeight; /* trigger reflow */
+                firstContent.style.animation = 'fadeInUp 1s ease-out forwards';
+            }, 500);
+        }
+
+        // Função para gerar o link do WhatsApp dinâmico
+        function openWhatsApp() {
+            const message = "Queridos Noivos,\n\nRecebemos com grande alegria e honra o convite para testemunhar esta nova aliança firmada em Deus. Agradecemos a consideração e a oportunidade de nos alegrarmos convosco. Já estamos ansiosos pelos detalhes!";
+            
+            // Encode URI Component para garantir que caracteres especiais funcionem
+            const encodedMessage = encodeURIComponent(message);
+            
+            // Link genérico que abre o app para escolher o contato
+            const waLink = `https://wa.me/?text=${encodedMessage}`;
+            
+            window.open(waLink, '_blank');
+        }
+
+        // Intersection Observer para animar os elementos quando entrarem na tela (efeito de scroll)
+        const observerOptions = {
+            threshold: 0.3
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const content = entry.target.querySelector('.content-box');
+                    if(content) {
+                        content.style.animation = 'none';
+                        content.offsetHeight; /* trigger reflow */
+                        content.style.animation = 'fadeInUp 1s ease-out forwards';
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.page-section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
+
